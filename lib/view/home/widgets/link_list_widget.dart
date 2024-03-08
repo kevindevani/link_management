@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linkmanagement/controller/home_screen_controller.dart';
+import 'package:linkmanagement/service/launch_url_service.dart';
 import 'package:linkmanagement/utils/app_color.dart';
 import 'package:linkmanagement/utils/base_image.dart';
 import 'package:linkmanagement/utils/math_utils.dart';
@@ -30,25 +31,6 @@ class LinkListWidget extends StatefulWidget {
 class _LinkListWidgetState extends State<LinkListWidget> {
   HomeScreenController homeScreenController = Get.find();
 
-  // String validateLink(String link) {
-  //   RegExp instagramRegex =
-  //       RegExp(r'^https?:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9_]+\/?$');
-  //   RegExp facebookRegex =
-  //       RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/[a-zA-Z0-9_]+\/?$');
-  //   RegExp tiktokRegex =
-  //       RegExp(r'^https?:\/\/(?:www\.)?tiktok\.com\/@([a-zA-Z0-9_]+)\/?$');
-
-  //   if (instagramRegex.hasMatch(link)) {
-  //     return AppImages.icInstagram;
-  //   } else if (facebookRegex.hasMatch(link)) {
-  //     return AppImages.icFacebook;
-  //   } else if (tiktokRegex.hasMatch(link)) {
-  //     return AppImages.icTiktok;
-  //   } else {
-  //     return AppImages.icOtherLink;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,17 +54,6 @@ class _LinkListWidgetState extends State<LinkListWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ///
-          // Expanded(
-          //   child: Row(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-
-          //     ],
-          //   ),
-          // ),
-
-          ///
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
@@ -96,33 +67,38 @@ class _LinkListWidgetState extends State<LinkListWidget> {
           ),
 
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.title != '')
+            child: InkWell(
+              onTap: () {
+                launchTheUrl(url: widget.link);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.title != '')
+                    baseText(
+                      widget.title,
+                      fontSize: 16,
+                      color: AppColors.black,
+                      maxLine: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  if (widget.title != '')
+                    const SizedBox(
+                      height: 2,
+                    ),
                   baseText(
-                    widget.title,
-                    fontSize: 16,
-                    color: AppColors.black,
-                    maxLine: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w500,
+                    widget.link,
+                    fontSize: 14,
+                    // maxLine: 1,
+                    color: AppColors.grey1,
+                    // overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w400,
+                    isUnderline: true,
                   ),
-                if (widget.title != '')
-                  const SizedBox(
-                    height: 2,
-                  ),
-                baseText(
-                  widget.link,
-                  fontSize: 14,
-                  // maxLine: 1,
-                  color: AppColors.grey1,
-                  // overflow: TextOverflow.ellipsis,
-                  fontWeight: FontWeight.w400,
-                  isUnderline: true,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -145,3 +121,23 @@ class _LinkListWidgetState extends State<LinkListWidget> {
     );
   }
 }
+
+
+  // String validateLink(String link) {
+  //   RegExp instagramRegex =
+  //       RegExp(r'^https?:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9_]+\/?$');
+  //   RegExp facebookRegex =
+  //       RegExp(r'^https?:\/\/(?:www\.)?facebook\.com\/[a-zA-Z0-9_]+\/?$');
+  //   RegExp tiktokRegex =
+  //       RegExp(r'^https?:\/\/(?:www\.)?tiktok\.com\/@([a-zA-Z0-9_]+)\/?$');
+
+  //   if (instagramRegex.hasMatch(link)) {
+  //     return AppImages.icInstagram;
+  //   } else if (facebookRegex.hasMatch(link)) {
+  //     return AppImages.icFacebook;
+  //   } else if (tiktokRegex.hasMatch(link)) {
+  //     return AppImages.icTiktok;
+  //   } else {
+  //     return AppImages.icOtherLink;
+  //   }
+  // }
