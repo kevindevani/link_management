@@ -17,18 +17,21 @@ class LinkListModelAdapter extends TypeAdapter<LinkListModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return LinkListModel(
-      link: fields[0] as String,
-      title: fields[1] as bool,
+      linkId: fields[0] as int,
+      link: fields[1] as String,
+      title: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, LinkListModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.link)
+      ..write(obj.linkId)
       ..writeByte(1)
+      ..write(obj.link)
+      ..writeByte(2)
       ..write(obj.title);
   }
 

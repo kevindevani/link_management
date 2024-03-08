@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:linkmanagement/controller/home_screen_controller.dart';
+import 'package:linkmanagement/models/link_list_model.dart';
 import 'package:linkmanagement/utils/app_color.dart';
 import 'package:linkmanagement/utils/const_strings.dart';
 import 'package:linkmanagement/utils/math_utils.dart';
 import 'package:linkmanagement/view/home/widgets/add_link_bottom_sheet.dart';
-import 'package:linkmanagement/view/home/widgets/link_preview_widget.dart';
+import 'package:linkmanagement/view/home/widgets/link_list_widget.dart';
 import 'package:linkmanagement/widgets/base_text.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,10 +44,11 @@ class _HomeScreenState extends State<HomeScreen>
         backgroundColor: AppColors.white,
         centerTitle: true,
         title: baseText(
-          'Home',
+          'HOME',
           fontSize: 18,
-          fontWeight: FontWeight.w500,
-          color: AppColors.primary,
+          fontWeight: FontWeight.bold,
+          color: AppColors.black,
+          letterSpacing: 1,
         ),
         bottom: TabBar(
           controller: tabController,
@@ -85,26 +88,61 @@ class _HomeScreenState extends State<HomeScreen>
           ),
 
           //2
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: getSizeWidth(context, 4),
-            ),
-            child: ListView.builder(
-              itemCount: 6,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(
-                top: getSizeHeight(context, 2),
-                bottom: getSizeHeight(context, 10),
-              ),
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return LinkPreviewWidget(
-                  title: 'title',
-                  link: 'aaaaaa',
+          ValueListenableBuilder(
+              valueListenable: homeScreenController.linkDataBox.listenable(),
+              builder: (context, box, child) {
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getSizeWidth(context, 4),
+                  ),
+                  child: ListView.builder(
+                    itemCount: box.values.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(
+                      top: getSizeHeight(context, 2),
+                      bottom: getSizeHeight(context, 10),
+                    ),
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      LinkListModel linkData = box.values.toList()[index];
+                      return LinkListWidget(
+                        isFromEdit: true,
+                        index: index,
+                        linkId: linkData.linkId,
+                        title: linkData.title,
+                        link: linkData.link,
+                        onPressed: () async {
+                          await showModalBottomSheet(
+                            context: context,
+                            backgroundColor: AppColors.white,
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            builder: (context) {
+                              return StatefulBuilder(
+                                  builder: (context, setState) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
+                                  child: AddLinkBottomSheetWidget(
+                                    isFromEdit: true,
+                                    index: index,
+                                    linkId: linkData.linkId,
+                                    linkText: linkData.link,
+                                    titleText: linkData.title,
+                                  ),
+                                );
+                              });
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
-          ),
+              }),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -120,13 +158,15 @@ class _HomeScreenState extends State<HomeScreen>
                 return Padding(
                   padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: const AddLinkBottomSheetWidget(),
+                  child: const AddLinkBottomSheetWidget(
+                    isFromEdit: false,
+                  ),
                 );
               });
             },
           );
         },
-        tooltip: 'Increment',
+        // tooltip: 'Increment',
         child: const Icon(
           Icons.add,
           color: AppColors.white,

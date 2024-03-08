@@ -6,12 +6,15 @@ part "link_list_model.g.dart";
 @HiveType(typeId: 0)
 class LinkListModel {
   @HiveField(0)
-  late final String link;
+  late final int linkId;
   @HiveField(1)
-  late final bool title;
+  late final String link;
+  @HiveField(2)
+  late final String title;
 
   LinkListModel({
+    required this.linkId,
     required this.link,
-    required this.title,
+    this.title = '',
   });
 }

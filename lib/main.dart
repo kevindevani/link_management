@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:linkmanagement/models/link_list_model.dart';
@@ -20,10 +21,7 @@ void main() async {
   Hive.registerAdapter(LinkListModelAdapter());
 
   /// open box
-  await Hive.openBox<LinkListModel>("LINKSDATA");
-
-  /*To store data locally like "adding category only one time"*/
-  await Hive.openBox("myBox");
+  await Hive.openBox<LinkListModel>(ConstantStrings.linksData);
 
   runApp(const MyApp());
 }
@@ -34,6 +32,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.dark,
+    ));
     return GetMaterialApp(
       title: 'Link Management',
       debugShowCheckedModeBanner: false,
